@@ -5,7 +5,7 @@ const videos = require(".");
 
 const cli = meow(`
 	Usage
-	  $ videos [playlist_url] [api_key] [videos_path]
+	  $ videos <playlist_url> <api_key> <videos_path>
 
 	Options
 	  --max  The maximum amount of videos to download from the given playlist url [Default: 5]
@@ -20,8 +20,4 @@ const apiKey = cli.input[1];
 const videosPath = cli.input[2];
 const opts = cli.flags;
 
-videos(url, apiKey, videosPath, opts)
-	.catch(err => {
-		console.log(err);
-		process.exit(1);
-	});
+videos(url, apiKey, videosPath, opts);

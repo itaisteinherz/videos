@@ -90,7 +90,7 @@ module.exports = (url, apiKey, videosPath, opts) => {
 
 				const videoPath = path.join(videosPath, `${videoTitle}.${ext}`);
 
-				const download = downloadVideo(url, ext); // TODO: Add support for other formats, including music-only ones.
+				const download = downloadVideo(url, ext); // TODO: Add support for other formats, including music-only ones. Also, address the issue in https://github.com/fent/node-ytdl-core#handling-separate-streams.
 
 				download.pipe(fs.createWriteStream(videoPath));
 

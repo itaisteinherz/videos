@@ -15,8 +15,7 @@ $ npm install https://github.com/itaisteinherz/videos
 ```js
 const videos = require("videos");
 
-videos("unicorns");
-//=> 'unicorns & rainbows'
+videos("https://youtu.be/q6EoRBvdVPQ", "AIzaSyDIWDAP9xcj2cVu6TCY8z2uVH6Nb7TqUIM", "~/Music");
 ```
 
 
@@ -63,7 +62,7 @@ $ npm install --global https://github.com/itaisteinherz/videos
 $ videos --help
 
 Usage
-  $ videos [playlist_url] [api_key] [videos_path]
+  $ videos <playlist_url> <api_key> <videos_path>
 
 Options
   --max  The maximum amount of videos to download from the given playlist url [Default: 5]
