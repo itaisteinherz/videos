@@ -10,7 +10,7 @@ import m from ".";
 
 const tempPath = path.join(__dirname, "temp");
 
-const apiKey = "AIzaSyD6AnKxqPrNd7M_nVS5EkQ2TFS0uvWphNo"; // TODO: Move this into an environment variable.
+const apiKey = process.env.YOUTUBE_API_KEY;
 
 async function macro(t, url, filenames, opts) {
 	const download = await m(url, apiKey, tempPath, opts);
