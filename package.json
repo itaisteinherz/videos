@@ -1,6 +1,6 @@
 {
 	"name": "videos",
-	"version": "0.1.1",
+	"version": "1.0.0",
 	"description": "Download videos from YouTube",
 	"license": "MIT",
 	"repository": "itaisteinherz/videos",
