@@ -5,9 +5,8 @@ const path = require("path");
 const pify = require("pify");
 const google = require("googleapis");
 const urlParser = require("js-video-url-parser");
+const isPlaylist = require("is-playlist");
 const ytdl = require("ytdl-core");
-const ProgressBar = require("progress");
-const chalk = require("chalk");
 
 let youtube;
 
@@ -19,41 +18,19 @@ function downloadVideo(url, ext) {
 	return ytdl(url, opts);
 }
 
-function showDownloadInfo(download, videoTitle, videoUrl) {
-	let bar;
+module.exports = (url, apiKey, videosPath, opts) => { // TODO: Suport using an OAUTH 2.0 token instead of an API key from authentication.
+	opts = opts || {}; // TODO: Check if I should validate the options' types as well.
 
-	download.on("response", res => {
-		bar = new ProgressBar(`Downloading ${chalk.blue(videoTitle)} [:bar] :percent `, {
-			complete: String.fromCharCode(0x2588),
-			total: parseInt(res.headers["content-length"], 10)
-		});
-	});
-
-	download.on("data", data => {
-		bar.tick(data.length);
-	});
-
-	download.on("finish", () => {
-		console.log(`Finished downloading ${chalk.blue(videoTitle)} (${chalk.underline(videoUrl)})`);
-	});
-
-	return new Promise((resolve, reject) => {
-		download.on("finish", resolve);
-		download.on("error", reject);
-	});
-}
-
-module.exports = (url, apiKey, videosPath, opts) => {
 	if (typeof url !== "string") {
-		throw new TypeError(`Expected a string, got ${typeof url}`);
+		throw new TypeError(`Expected \`url\` to be a \`string\`, got \`${typeof url}\``);
 	}
 
 	if (typeof apiKey !== "string") {
-		throw new TypeError(`Expected a string, got ${typeof apiKey}`);
+		throw new TypeError(`Expected \`apiKey\` to be a \`string\`, got \`${typeof apiKey}\``);
 	}
 
 	if (typeof videosPath !== "string") {
-		throw new TypeError(`Expected a string, got ${typeof videosPath}`);
+		throw new TypeError(`Expected \`videosPath\` to be a \`string\`, got \`${typeof videosPath}\``);
 	}
 
 	const videoInfo = urlParser.parse(url);
@@ -63,19 +40,15 @@ module.exports = (url, apiKey, videosPath, opts) => {
 	}
 
 	if (["playlist", "video"].indexOf(videoInfo.mediaType) === -1) {
-		throw new Error(`Expected a video url, got url to ${videoInfo.mediaType}`);
+		throw new Error(`Expected a video url, got url to ${videoInfo.mediaType}`); // TODO: Throw error if the given `url` parameter is not an url using the `is-url-superb` package.
 	}
-
-	opts = opts || {};
 
 	youtube = google.youtube({
 		version: "v3",
 		auth: apiKey
 	});
 
-	const isPlaylist = typeof videoInfo.list !== "undefined" || videoInfo.mediaType === "playlist";
-
-	if (!isPlaylist) {
+	if (!isPlaylist(url)) {
 		const videoOpts = {
 			key: apiKey,
 			id: videoInfo.id,
@@ -92,9 +65,13 @@ module.exports = (url, apiKey, videosPath, opts) => {
 
 				const download = downloadVideo(url, ext); // TODO: Add support for other formats, including music-only ones. Also, address the issue in https://github.com/fent/node-ytdl-core#handling-separate-streams.
 
-				download.pipe(fs.createWriteStream(videoPath));
+				download.pipe(fs.createWriteStream(videoPath)); // TODO: Check if I should leave this part to the user, instead of doing it in the module.
 
-				return showDownloadInfo(download, videoTitle, url);
+				return {
+					downloadStream: download,
+					videoTitle,
+					videoUrl: url
+				};
 			});
 	}
 
@@ -119,24 +96,21 @@ module.exports = (url, apiKey, videosPath, opts) => {
 
 				const ext = "mp4"; // TODO: Get this from the user instead of hardcoding it.
 
-				// const videoUrl = `youtube.com/watch?v=${videoId}`;
-				const videoUrl = urlParser.create({
-					videoInfo: {
-						provider: "youtube",
-						id: videoId,
-						mediaType: "video"
-					},
-					format: "short"
-				});
+				const videoUrl = `https://youtu.be/${videoId}`;
+
 				const videoPath = path.join(videosPath, `${videoTitle}.${ext}`);
 
 				const download = downloadVideo(videoUrl, ext); // TODO: Add support for other formats, including music-only ones. Also, move to downloading videos synchronously rather than asynchronously.
 
-				downloads.push(showDownloadInfo(download, videoTitle, videoUrl));
-
 				download.pipe(fs.createWriteStream(videoPath));
+
+				downloads.push({
+					downloadStream: download,
+					videoTitle,
+					videoUrl
+				});
 			}
 
-			return Promise.all(downloads);
+			return downloads;
 		});
 };
