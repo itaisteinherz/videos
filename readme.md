@@ -17,6 +17,8 @@ const videos = require("videos");
 
 const download = videos("https://youtu.be/q6EoRBvdVPQ", "AIzaSyDIWDAP9xcj2cVu6TCY8z2uVH6Nb7TqUIM", "~/Music");
 
+const downloadStream = download.downloadStream;
+
 downloadStream.on("response", res => {
 	// Parse response...
 });
@@ -25,7 +27,7 @@ downloadStream.on("data", data => {
 	// Display download progress...
 });
 
-download.on("finish", () => {
+downloadStream.on("finish", () => {
 	// Download finished...
 });
 ```
