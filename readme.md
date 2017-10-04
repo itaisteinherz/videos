@@ -17,18 +17,16 @@ const videos = require("videos");
 
 const download = videos("https://youtu.be/q6EoRBvdVPQ", "AIzaSyDIWDAP9xcj2cVu6TCY8z2uVH6Nb7TqUIM", "~/Music");
 
-const downloadStream = download.downloadStream;
-
-downloadStream.on("response", res => {
-	// Parse response...
-});
-
-downloadStream.on("data", data => {
+download.onProgress(progress => {
 	// Display download progress...
 });
 
-downloadStream.on("finish", () => {
+download.then(() => {
 	// Download finished...
+});
+
+download.catch(err => {
+	// Display error downloading...
 });
 ```
 
@@ -36,6 +34,8 @@ downloadStream.on("finish", () => {
 ## API
 
 ### videos(url, apiKey, videosPath, [options])
+
+Returns an `Array<Promise>`.
 
 #### url
 

@@ -3,9 +3,7 @@ import path from "path";
 
 import test from "ava";
 import pify from "pify";
-import pEvent from "p-event";
 import rimraf from "rimraf";
-import arrify from "arrify";
 import m from ".";
 
 const tempPath = path.join(__dirname, "temp");
@@ -13,9 +11,7 @@ const tempPath = path.join(__dirname, "temp");
 const apiKey = process.env.YOUTUBE_API_KEY;
 
 async function macro(t, url, filenames, opts) {
-	const download = await m(url, apiKey, tempPath, opts);
-
-	await pEvent(arrify(download)[0].downloadStream, "finish");
+	await m(url, apiKey, tempPath, opts).then(downloads => Promise.all(downloads));
 
 	const files = await pify(fs.readdir)(tempPath);
 	t.deepEqual(files, filenames);
