@@ -15,18 +15,20 @@ $ npm install videos
 ```js
 const videos = require("videos");
 
-const download = videos("https://youtu.be/q6EoRBvdVPQ", "AIzaSyDIWDAP9xcj2cVu6TCY8z2uVH6Nb7TqUIM", "~/Music");
+const download = videos("https://youtu.be/q6EoRBvdVPQ", "KIzaSyDIWDAP8xcj2cVu6TBY8z2uVG6Nb7TqUIM", "/home/videos");
 
-download.onProgress(progress => {
-	// Display download progress...
-});
+download.then(downloads => {
+	downloads[0].onProgress(progress => {
+		// Display download progress...
+	});
 
-download.then(() => {
-	// Download finished...
-});
+	downloads[0].then(() => {
+		// Download finished...
+	});
 
-download.catch(err => {
-	// Display error downloading...
+	downloads[0].catch(err => {
+		// Display error downloading...
+	});
 });
 ```
 
