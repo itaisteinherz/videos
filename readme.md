@@ -37,7 +37,7 @@ download.then(downloads => {
 
 ### videos(url, apiKey, videosPath, [options])
 
-Returns an `Array<Promise>`.
+Returns a `Promise` that is fulfilled when the url's metadata is fetched, or rejects if the fetching fails. The fulfilled value is an `Array` of [`PProgress`](https://github.com/sindresorhus/p-progress) promises which represent each video's download (in case the url is for a playlist) or the video's download (in case the url is for a video).
 
 #### url
 

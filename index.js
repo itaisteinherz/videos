@@ -77,7 +77,7 @@ module.exports = (url, apiKey, videosPath, opts) => { // TODO: Suport using an O
 		throw new TypeError(`Expected \`videosPath\` to be a \`string\`, got \`${typeof videosPath}\``);
 	}
 
-	const videoInfo = urlParser.parse(url);
+	const videoInfo = urlParser.parse(url); // TODO: Maybe resolve the url before parsing it so that minified urls and such could be used.
 
 	if (videoInfo.provider !== "youtube") {
 		throw new Error(`Expected a video from Youtube, got video from ${videoInfo.provider}`);
