@@ -106,7 +106,7 @@ module.exports = (url, apiKey, videosPath, opts) => { // TODO: Suport using an O
 
 				const videoUrl = `https://youtu.be/${videoId}`;
 
-				const videoPath = path.join(videosPath, `${videoTitle}.${ext}`);
+				const videoPath = path.join(videosPath, `${videoTitle.replace(new RegExp(path.sep, "g"), "")}.${ext}`);  // TODO: Find a better solution than this one for https://github.com/itaisteinherz/videos/issues/1.
 
 				const download = downloadVideo(videoUrl, ext, videoPath); // TODO: Add support for other formats, including music-only ones. Also, move to downloading videos synchronously rather than asynchronously.
 
