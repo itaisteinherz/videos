@@ -47,6 +47,6 @@ test.serial("throw if videosPath is not a string", t => {
 
 test.serial("download video", macro, "https://youtu.be/q6EoRBvdVPQ", ["Yee.mp4"]);
 
-test.serial("download playlist from video", macro, "https://youtu.be/q6EoRBvdVPQ?list=PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y", ["Yee.mp4"], {max: 1});
+test.serial("download playlist from video", macro, "https://www.youtube.com/watch?v=q6EoRBvdVPQ&index=1&list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", ["Yee.mp4"], {max: 1});
 
-test.serial("download playlist from page", macro, "https://www.youtube.com/playlist?list=PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y", ["Yee.mp4"], {max: 1});
+test.serial("download playlist from page", macro, "https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", ["Yee.mp4"], {max: 1});
