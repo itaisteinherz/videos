@@ -61,13 +61,23 @@ The path to download videos to.
 
 #### options
 
+##### start
+
+Type: `Number`<br>
+Default: `0`<br>
+Range: `0`-`50`
+
+Index to start downloading videos at (this option will be ignored if a video url is given). Note that if `start` is negative, `0` will be used instead and if `start` is bigger than `50`, it will be used instead.
+
 ##### max
 
 Type: `Number`<br>
 Default: `5`<br>
 Range: `0`-`50`
 
-The maximum amount of videos to download from the given playlist url (this option will be ignored if a video url is given).
+Maximum amount of videos to download from the given playlist url (this option will be ignored if a video url is given). Note that if `max` is negative, `0` will be used instead and if `max` is bigger than `50`, it will be used instead.
+
+If the `start` and `max` options are specified and `start + max` is bigger than `50`, `50 - start` videos will be downloaded instead of `max`.
 
 
 ## Related

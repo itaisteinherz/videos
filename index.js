@@ -19,17 +19,18 @@ function getUrlInfo(url, urlInfo, apiKey, opts) {
 			part: "snippet"
 		};
 
-		return pify(youtube.videos.list)(videoOpts);
+		return pify(youtube.videos.list)(videoOpts).then(res => res.items);
 	}
 
 	const playlistOpts = {
 		key: apiKey,
 		playlistId: urlInfo.list,
 		part: "id,snippet",
-		maxResults: opts.max
+		maxResults: opts.max + opts.start <= 50 ? opts.max + opts.start : 50
 	};
 
-	return pify(youtube.playlistItems.list)(playlistOpts);
+	return pify(youtube.playlistItems.list)(playlistOpts)
+		.then(({items}) => items.length > opts.start ? items.slice(opts.start) : []);
 }
 
 function downloadVideo(url, ext, downloadPath) {
@@ -92,13 +93,14 @@ module.exports = (url, apiKey, videosPath, opts) => { // TODO: Suport using an O
 		auth: apiKey
 	});
 
-	opts.max = Math.min(Math.max((opts.max || 5), 0), 50);
+	opts.max = Math.min(Math.max((opts.max || 5), 0), 50); // TODO: Maybe limit `opts.max` to be between 1 and 50 instead of 0 and 50 and `opts.start` to be between 0 and 49 instead of 0 and 50.
+	opts.start = Math.min(Math.max((opts.start || 0), 0), 50);
 
 	return getUrlInfo(url, videoInfo, apiKey, opts)
-		.then(results => {
+		.then(res => {
 			const downloads = [];
 
-			for (const video of results.items) {
+			for (const video of res) {
 				const videoId = video.snippet.resourceId ? video.snippet.resourceId.videoId : video.id;
 				const videoTitle = video.snippet.title;
 

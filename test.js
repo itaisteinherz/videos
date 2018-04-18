@@ -50,3 +50,7 @@ test.serial("download video", macro, "https://youtu.be/q6EoRBvdVPQ", ["Yee.mp4"]
 test.serial("download playlist from video", macro, "https://www.youtube.com/watch?v=q6EoRBvdVPQ&index=1&list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", ["Yee.mp4"], {max: 1});
 
 test.serial("download playlist from page", macro, "https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", ["Yee.mp4"], {max: 1});
+
+test.serial("start downloading playlist at given index", macro, "https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", ["color red.mp4"], {start: 1, max: 1});
+
+test.serial("start + max > 50", macro, "https://www.youtube.com/playlist?list=PLOy0j9AvlVZPto6IkjKfpu0Scx--7PGTC", ["Nicolas Cage Driving.mp4", "thomas kinkade PREVIEW.MOV.mp4"], {start: 48});
