@@ -35,7 +35,7 @@ function getUrlInfo(url, urlInfo, apiKey, opts) {
 
 function downloadVideo(url, ext, downloadPath) {
 	const opts = {
-		filter: format => format.bitrate && format.container === ext // NOTE: This was taken from https://github.com/fent/node-ytdl/blob/master/bin/ytdl.js#L248.
+		filter: format => format.bitrate && format.container === ext // NOTE: This was taken from https://github.com/fent/node-ytdl/blob/master/bin/ytdl.js#L181.
 	};
 
 	return new PProgress((resolve, reject, progress) => { // TODO: Check if I should use `p-lazy` to postpone the download to when `.then` is called.
@@ -43,29 +43,27 @@ function downloadVideo(url, ext, downloadPath) {
 		let totalSize;
 		let downloadedSize = 0;
 
-		let lastProgress = 0;
-
 		download.on("response", res => {
 			totalSize = parseFloat(res.headers["content-length"], 10);
 		});
 
 		download.on("data", data => {
 			downloadedSize += data.length;
+			const currentProgress = downloadedSize / totalSize;
 
-			lastProgress = Math.max(downloadedSize / totalSize, lastProgress);
-			progress(lastProgress);
-		});
-
-		process.on("unhandledRejection", error => {
-			if (!error.message.includes("The progress percentage can't be lower than the last progress event")) {
-				throw error;
-			}
+			progress(currentProgress);
 		});
 
 		download.on("finish", resolve);
 		download.on("error", reject);
 
 		download.pipe(fs.createWriteStream(downloadPath)); // TODO: Check if I should leave this part to the user, instead of doing it in the module.
+
+		process.on("unhandledRejection", (reason, promise) => {
+			if (reason.message.includes("The progress percentage can't be lower than the last progress event")) {
+				promise.catch(() => Promise.resolve());
+			}
+		});
 	});
 }
 
