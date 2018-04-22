@@ -57,7 +57,7 @@ function downloadVideo(url, ext, downloadPath) {
 		});
 
 		process.on("unhandledRejection", error => {
-			if (!error.message.contains("The progress percentage can't be lower than the last progress event")) {
+			if (!error.message.includes("The progress percentage can't be lower than the last progress event")) {
 				throw error;
 			}
 		});
