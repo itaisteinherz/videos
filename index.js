@@ -58,12 +58,6 @@ function downloadVideo(url, ext, downloadPath) {
 		download.on("error", reject);
 
 		download.pipe(fs.createWriteStream(downloadPath)); // TODO: Check if I should leave this part to the user, instead of doing it in the module.
-
-		process.on("unhandledRejection", (reason, promise) => {
-			if (reason.message.includes("The progress percentage can't be lower than the last progress event")) {
-				promise.catch(() => Promise.resolve());
-			}
-		});
 	});
 }
 
@@ -99,6 +93,12 @@ module.exports = (url, apiKey, videosPath, opts) => { // TODO: Suport using an O
 
 	opts.max = Math.min(Math.max((opts.max || 5), 0), 50); // TODO: Maybe limit `opts.max` to be between 1 and 50 instead of 0 and 50 and `opts.start` to be between 0 and 49 instead of 0 and 50.
 	opts.start = Math.min(Math.max((opts.start || 0), 0), 50);
+
+	process.on("unhandledRejection", (reason, promise) => {
+		if (reason.message.includes("The progress percentage can't be lower than the last progress event")) {
+			promise.catch(() => Promise.resolve());
+		}
+	});
 
 	return getUrlInfo(url, videoInfo, apiKey, opts)
 		.then(res => {
