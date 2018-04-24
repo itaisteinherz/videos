@@ -25,6 +25,7 @@
 		"download"
 	],
 	"dependencies": {
+		"filenamify": "^2.0.0",
 		"googleapis": "^20.1.0",
 		"is-playlist": "^1.0.0",
 		"js-video-url-parser": "^0.2.4",

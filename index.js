@@ -8,6 +8,7 @@ const urlParser = require("js-video-url-parser");
 const isPlaylist = require("is-playlist");
 const ytdl = require("ytdl-core");
 const PProgress = require("p-progress");
+const filenamify = require("filenamify");
 
 let youtube;
 
@@ -110,10 +111,10 @@ module.exports = (url, apiKey, videosPath, opts) => { // TODO: Suport using an O
 
 				const ext = "mp4"; // TODO: Get this from the user instead of hardcoding it.
 
+				const filename = filenamify(videoTitle, {replacement: "-"});
+				const videoPath = path.join(videosPath, `${filename}.${ext}`);  // TODO: Find a better solution than this one for https://github.com/itaisteinherz/videos/issues/1.
+
 				const videoUrl = `https://youtu.be/${videoId}`;
-
-				const videoPath = path.join(videosPath, `${videoTitle.replace(new RegExp(path.sep, "g"), "")}.${ext}`);  // TODO: Find a better solution than this one for https://github.com/itaisteinherz/videos/issues/1.
-
 				const download = downloadVideo(videoUrl, ext, videoPath); // TODO: Add support for other formats, including music-only ones. Also, move to downloading videos synchronously rather than asynchronously.
 
 				download.videoTitle = videoTitle;
